@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Bot, Zap, Shield, Cloud, TrendingUp, Code2,
@@ -37,7 +37,7 @@ import { cn } from "@/lib/utils";
 /* ── animation presets ─────────────────────────────────────────── */
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.58, ease: [0.22, 1, 0.36, 1] } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.58, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
 };
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.09 } } };
 const fadeIn  = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { duration: 0.5 } } };
@@ -364,9 +364,8 @@ export default function Home() {
 
             {/* Rows */}
             {comparison.map(({ before, after }, i) => (
-              <>
+              <Fragment key={i}>
                 <motion.div
-                  key={`b-${i}`}
                   initial={{ opacity: 0, x: -16 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
@@ -376,7 +375,6 @@ export default function Home() {
                   {before}
                 </motion.div>
                 <motion.div
-                  key={`a-${i}`}
                   initial={{ opacity: 0, x: 16 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
@@ -385,7 +383,7 @@ export default function Home() {
                 >
                   {after}
                 </motion.div>
-              </>
+              </Fragment>
             ))}
           </div>
         </div>
@@ -507,7 +505,7 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           >
-            <Accordion type="single" collapsible className="space-y-3">
+            <Accordion className="space-y-3">
               {faqs.map(({ q, a }, i) => (
                 <AccordionItem
                   key={i}

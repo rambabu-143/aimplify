@@ -5,9 +5,9 @@ import { Bot, Database, Mail, BarChart3, Zap, TrendingUp, DollarSign } from "luc
 
 /* ─── node data ───────────────────────────────────────────────── */
 const leftNodes = [
-  { icon: Database, label: "CRM & Leads",   color: "#6366f1", y: 64  },
-  { icon: Mail,     label: "Email Campaigns",color: "#10b981", y: 160 },
-  { icon: BarChart3,label: "Site Analytics", color: "#f59e0b", y: 256 },
+  { icon: Database,  label: "CRM & Leads",     color: "#6366f1", y: 64  },
+  { icon: Mail,      label: "Email Campaigns",  color: "#10b981", y: 160 },
+  { icon: BarChart3, label: "Site Analytics",   color: "#f59e0b", y: 256 },
 ];
 
 const rightNodes = [
@@ -16,7 +16,6 @@ const rightNodes = [
   { icon: DollarSign, label: "Costs Down 40%",  color: "#f59e0b", y: 256 },
 ];
 
-/* ─── SVG path strings ─────────────────────────────────────────── */
 const inPaths = [
   "M 145 64  C 188 64  222 160 248 160",
   "M 145 160 L 248 160",
@@ -28,42 +27,49 @@ const outPaths = [
   "M 312 160 C 338 160 372 256 415 256",
 ];
 
-/* ─── Dot component (native SVG animateMotion) ─────────────────── */
-function FlowDot({ path, color, delay }: { path: string; color: string; delay: string }) {
+/* ─── Flowing dot along a path (native SVG animateMotion) ──────── */
+type FlowDotProps = { path: string; color: string; delay: string };
+
+function FlowDot({ path, color, delay }: FlowDotProps) {
   return (
     <circle r="4" fill={color} opacity="0.85">
-      {/* @ts-expect-error — animateMotion is a valid SVG element */}
-      <animateMotion
-        dur="2.6s"
-        repeatCount="indefinite"
-        begin={delay}
-        path={path}
-        calcMode="spline"
-        keyTimes="0;1"
-        keySplines="0.4 0 0.6 1"
-      />
+      {/* animateMotion is a standard SVG element — cast to bypass stale React types */}
+      {(() => {
+        const AM = "animateMotion" as unknown as React.ComponentType<Record<string, unknown>>;
+        return (
+          <AM
+            dur="2.6s"
+            repeatCount="indefinite"
+            begin={delay}
+            path={path}
+            calcMode="spline"
+            keyTimes="0;1"
+            keySplines="0.4 0 0.6 1"
+          />
+        );
+      })()}
     </circle>
   );
 }
 
-/* ─── Node card (foreignObject) ───────────────────────────────── */
-function NodeCard({
-  x, y, icon: Icon, label, color, align,
-}: {
-  x: number; y: number; icon: React.ElementType;
-  label: string; color: string; align: "left" | "right";
-}) {
+/* ─── Node card inside foreignObject ──────────────────────────── */
+type NodeCardProps = {
+  x: number; y: number;
+  icon: React.ElementType;
+  label: string; color: string;
+  align: "left" | "right";
+};
+
+function NodeCard({ x, y, icon: Icon, label, color, align }: NodeCardProps) {
   const w = 130;
   const h = 44;
   return (
     <foreignObject x={x} y={y - h / 2} width={w} height={h}>
       <div
-        // @ts-expect-error — xmlns needed for SVG foreignObject
-        xmlns="http://www.w3.org/1999/xhtml"
         className={`flex items-center gap-2 h-full w-full ${align === "right" ? "flex-row-reverse" : ""}`}
       >
         <div
-          className="w-[44px] h-[44px] shrink-0 rounded-xl border border-neutral-200 bg-white shadow-sm flex items-center justify-center"
+          className="w-[44px] h-[44px] shrink-0 rounded-xl border border-neutral-200 bg-white flex items-center justify-center"
           style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
         >
           <Icon size={18} style={{ color }} />
@@ -80,6 +86,8 @@ function NodeCard({
 
 /* ─── Main component ───────────────────────────────────────────── */
 export default function FlowDiagram() {
+  const allNodes = [...leftNodes, ...rightNodes];
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -93,12 +101,12 @@ export default function FlowDiagram() {
         className="w-full h-full overflow-visible"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* ── glow paths (thick, low opacity) ── */}
+        {/* glow paths */}
         {[...inPaths, ...outPaths].map((d, i) => (
           <path
             key={`glow-${i}`}
             d={d}
-            stroke={[...leftNodes, ...rightNodes][i % 6]?.color ?? "#ccc"}
+            stroke={allNodes[i % allNodes.length]?.color ?? "#ccc"}
             strokeWidth="8"
             fill="none"
             opacity="0.06"
@@ -106,7 +114,7 @@ export default function FlowDiagram() {
           />
         ))}
 
-        {/* ── dashed track lines ── */}
+        {/* dashed track lines */}
         {[...inPaths, ...outPaths].map((d, i) => (
           <path
             key={`track-${i}`}
@@ -119,7 +127,7 @@ export default function FlowDiagram() {
           />
         ))}
 
-        {/* ── flowing dots on input paths ── */}
+        {/* flowing dots — input paths */}
         {inPaths.map((path, i) => (
           <g key={`indot-${i}`}>
             <FlowDot path={path} color={leftNodes[i].color} delay={`${i * 0.7}s`} />
@@ -127,7 +135,7 @@ export default function FlowDiagram() {
           </g>
         ))}
 
-        {/* ── flowing dots on output paths ── */}
+        {/* flowing dots — output paths */}
         {outPaths.map((path, i) => (
           <g key={`outdot-${i}`}>
             <FlowDot path={path} color={rightNodes[i].color} delay={`${i * 0.7 + 0.35}s`} />
@@ -135,7 +143,7 @@ export default function FlowDiagram() {
           </g>
         ))}
 
-        {/* ── left node cards ── */}
+        {/* left node cards */}
         {leftNodes.map((n, i) => (
           <motion.g
             key={`ln-${i}`}
@@ -147,8 +155,7 @@ export default function FlowDiagram() {
           </motion.g>
         ))}
 
-        {/* ── center node ── */}
-        {/* pulse rings */}
+        {/* pulse rings around center */}
         {[1, 2, 3].map((ring) => (
           <motion.circle
             key={`ring-${ring}`}
@@ -158,17 +165,12 @@ export default function FlowDiagram() {
             strokeWidth="1"
             initial={{ scale: 1, opacity: 0.3 }}
             animate={{ scale: 1 + ring * 0.28, opacity: 0 }}
-            transition={{
-              duration: 2.2,
-              repeat: Infinity,
-              delay: ring * 0.55,
-              ease: "easeOut",
-            }}
+            transition={{ duration: 2.2, repeat: Infinity, delay: ring * 0.55, ease: "easeOut" }}
             style={{ transformOrigin: "280px 160px" }}
           />
         ))}
 
-        {/* center circle */}
+        {/* center black circle */}
         <motion.circle
           cx={280} cy={160} r={30}
           fill="#0a0a0a"
@@ -178,27 +180,20 @@ export default function FlowDiagram() {
           style={{ transformOrigin: "280px 160px" }}
         />
 
-        {/* center icon (Bot) via foreignObject */}
+        {/* center Bot icon + label */}
         <motion.g
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.75 }}
         >
           <foreignObject x={256} y={136} width={48} height={48}>
-            <div
-              // @ts-expect-error
-              xmlns="http://www.w3.org/1999/xhtml"
-              className="w-full h-full flex items-center justify-center"
-            >
+            <div className="w-full h-full flex items-center justify-center">
               <Bot size={22} color="white" />
             </div>
           </foreignObject>
-
-          {/* label below */}
           <text
             x={280} y={206}
             textAnchor="middle"
-            className="text-[11px] font-semibold fill-neutral-500"
             fontSize="11"
             fill="#737373"
             fontFamily="inherit"
@@ -208,7 +203,7 @@ export default function FlowDiagram() {
           </text>
         </motion.g>
 
-        {/* ── right node cards ── */}
+        {/* right node cards */}
         {rightNodes.map((n, i) => (
           <motion.g
             key={`rn-${i}`}
@@ -221,7 +216,7 @@ export default function FlowDiagram() {
         ))}
       </svg>
 
-      {/* floating "live" badge */}
+      {/* live badge */}
       <motion.div
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
