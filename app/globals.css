@@ -92,13 +92,11 @@
   body {
     @apply bg-background text-foreground;
     -webkit-font-smoothing: antialiased;
-    cursor: none;
   }
   html {
     scroll-behavior: smooth;
   }
   a, button, [role="button"] {
-    cursor: none;
   }
 }
 
@@ -111,26 +109,6 @@
 ::-webkit-scrollbar-track { background: #fff; }
 ::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 4px; }
 
-/* Cursor */
-.cursor-dot {
-  position: fixed;
-  top: 0; left: 0;
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: #0a0a0a;
-  pointer-events: none;
-  z-index: 9999;
-  mix-blend-mode: normal;
-}
-.cursor-ring {
-  position: fixed;
-  top: 0; left: 0;
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(10,10,10,0.25);
-  pointer-events: none;
-  z-index: 9998;
-}
 
 /* Float animation for hero cards */
 @keyframes float-y {

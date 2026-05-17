@@ -3,9 +3,8 @@
 import { Fragment, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
-  Bot, Zap, Shield, Cloud, TrendingUp, Code2,
-  ArrowRight, CheckCircle2, Phone, Sparkles,
-  ChevronDown, X,
+  Bot, Zap, MessageSquare, ExternalLink,
+  ArrowRight, CheckCircle2, Phone, Sparkles, X,
 } from "lucide-react";
 
 // Aceternity UI
@@ -16,7 +15,6 @@ import {
 import { FlipWords } from "@/components/ui/flip-words";
 import { Button as MovingBorderButton } from "@/components/ui/moving-border";
 import { FollowerPointerCard } from "@/components/ui/following-pointer";
-import { CardStack } from "@/components/ui/card-stack";
 
 // Magic UI
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
@@ -48,50 +46,63 @@ const navItems = [
   { name: "Process",  link: "#process"  },
   { name: "Why Us",   link: "#why"      },
   { name: "FAQ",      link: "#faq"      },
+  { name: "About",    link: "/about"    },
 ];
 
 const stats = [
-  { value: "1,200+", label: "Tasks Automated" },
-  { value: "$2.4M+", label: "Saved for Clients" },
-  { value: "98",     label: "Avg Perf. Score"  },
-  { value: "50+",    label: "Clients Worldwide" },
+  { value: "1",      label: "Happy Client"      },
+  { value: "Free",   label: "Discovery Call"    },
+  { value: "0",      label: "Lock-in Contracts" },
+  { value: "1-on-1", label: "Dedicated Support" },
 ];
 
 const services = [
-  { icon: Bot,        color: "#6366f1", title: "AI & Automation",         desc: "Map every manual workflow and automate it end-to-end — lead follow-ups, invoicing, CRM updates, all hands-free." },
-  { icon: TrendingUp, color: "#10b981", title: "Marketing Automation",    desc: "Email sequences, CRM pipelines, social scheduling — a marketing engine that generates revenue around the clock." },
-  { icon: Zap,        color: "#f59e0b", title: "Website Performance",     desc: "Slow sites lose customers. We fix Core Web Vitals, load times, and server response so visitors stay." },
-  { icon: Shield,     color: "#ef4444", title: "Security Audits",         desc: "Find and close vulnerabilities before attackers do — apps, APIs, infrastructure, config. We fix what we find." },
-  { icon: Cloud,      color: "#8b5cf6", title: "Cloud Cost Optimization", desc: "Bloated AWS, GCP, or Azure bills? We cut waste without touching performance. Most clients save 30–40%." },
-  { icon: Code2,      color: "#f97316", title: "Full-Stack Development",  desc: "Something to build from scratch or legacy code to modernise? We ship fast, maintainable, production-ready software." },
+  {
+    icon: Bot,
+    color: "#6366f1",
+    title: "AI Workflow Automation",
+    desc: "Map every manual task in your business: lead follow-ups, invoicing, CRM updates, notifications. Automate it end-to-end so your team stops doing the same thing twice.",
+  },
+  {
+    icon: MessageSquare,
+    color: "#10b981",
+    title: "AI Chatbots",
+    desc: "WhatsApp and web chatbots that handle customer inquiries, qualify leads, and book appointments around the clock. Built for your exact workflow, not a generic template.",
+  },
+  {
+    icon: Zap,
+    color: "#f59e0b",
+    title: "Agency Workflow Automation",
+    desc: "Client onboarding, reporting, project updates, invoice chasing. We automate the ops layer of your agency so your team spends time on actual work, not admin.",
+  },
 ];
 
 const comparison = [
-  { before: "40 hrs/week on manual tasks",    after: "2 hrs/week oversight"       },
-  { before: "$5,800/mo cloud bill",           after: "$2,200/mo cloud bill"       },
-  { before: "Site loads in 4.6 seconds",      after: "Site loads in 0.7 seconds"  },
-  { before: "5% lead-to-customer rate",       after: "14% lead-to-customer rate"  },
-  { before: "Security issues undetected",     after: "Zero known vulnerabilities" },
-  { before: "Manual marketing follow-ups",    after: "Fully automated sequences"  },
+  { before: "40 hrs/week on manual tasks",          after: "2 hrs/week oversight"               },
+  { before: "Customer inquiries pile up overnight", after: "AI chatbot handles them 24/7"        },
+  { before: "Client onboarding takes days",         after: "Automated and done in under an hour" },
+  { before: "Leads slip through after hours",       after: "Instant AI follow-up, every time"   },
+  { before: "Team stuck on repetitive admin",       after: "Team focused on growth"             },
+  { before: "Manual marketing follow-ups",          after: "Fully automated sequences"          },
 ];
 
 const steps = [
-  { n: "01", title: "Discovery Call",   desc: "You walk us through your business — what runs well, what doesn't, what's eating time and money. We ask questions. No pitch." },
-  { n: "02", title: "Audit & Roadmap",  desc: "We map every opportunity: automation gaps, performance issues, security risks, cost leaks. Prioritised by business impact." },
+  { n: "01", title: "Discovery Call",   desc: "You walk us through your business. What runs well, what doesn't, what's eating time and money. We ask questions. No pitch." },
+  { n: "02", title: "Audit & Roadmap",  desc: "We map every automation opportunity: manual workflows, chatbot gaps, agency ops. Prioritised by business impact." },
   { n: "03", title: "Build & Maintain", desc: "We build everything, then stay on as your dedicated tech partner with monthly maintenance, monitoring, and ongoing improvement." },
 ];
 
-const whyCards = [
-  { id: 1, name: "E-commerce Owner",     designation: "Texas, USA",    content: "They found $3,200/month in wasted cloud spend in two days. We had no idea it was even there. Now it's all automated and we get monthly reports." },
-  { id: 2, name: "Marketing Agency",     designation: "London, UK",    content: "Our whole client onboarding process was manual. They automated it end-to-end. We saved 40 hours a week and our team can now focus on actual work." },
-  { id: 3, name: "SaaS Founder",         designation: "Toronto, Canada", content: "Our site went from a 31 Lighthouse score to 94 after one sprint. Bounce rate dropped 38%, conversions went up. Wish we'd done this sooner." },
-  { id: 4, name: "Real Estate Business", designation: "Sydney, Australia", content: "We had a SQL injection vulnerability we didn't even know about. They found it, explained it in plain English, and fixed it the same day." },
-];
+const founder = {
+  name: "Rambabu Arabandi",
+  title: "GenAI Engineer & Founder",
+  linkedin: "https://linkedin.com/in/rambabu-arabandi",
+  bio: "I'm a GenAI engineer who builds automation systems for small businesses and agencies. I've shipped AI tools used by real teams. Now I do the same for yours, personally, one client at a time.",
+};
 
 const faqs = [
   {
     q: "How long does the initial setup take?",
-    a: "Depends on scope. Simple automations or a performance fix can be live in 3–7 days. Full workflow automation or a security audit typically takes 2–4 weeks. We give you a clear timeline after the discovery call.",
+    a: "Depends on scope. A simple chatbot or automation can be live in 3 to 7 days. A full workflow audit and build typically takes 2 to 4 weeks. We give you a clear timeline after the discovery call.",
   },
   {
     q: "Do we need to be technical to work with you?",
@@ -99,19 +110,19 @@ const faqs = [
   },
   {
     q: "How does the monthly maintenance work?",
-    a: "After the initial build, we stay on as your tech partner. This includes monitoring, updates, bug fixes, and ongoing improvements — all for a flat monthly fee. No surprise invoices.",
+    a: "After the initial build, we stay on as your tech partner. This includes monitoring, updates, bug fixes, and ongoing improvements. All for a flat monthly fee. No surprise invoices.",
   },
   {
     q: "What if we already have some automation in place?",
-    a: "Even better — we audit what you have, keep what's working, replace or fix what isn't, and fill the gaps. We're not here to rip things out, just to make everything better.",
+    a: "Even better. We audit what you have, keep what's working, replace or fix what isn't, and fill the gaps. We're not here to rip things out, just to make everything better.",
   },
   {
-    q: "Do you work with businesses outside the USA?",
-    a: "Yes. We have clients in the USA, UK, Canada, Australia, and beyond. Everything is done remotely — calls, updates, and deliveries all happen async or via scheduled video calls.",
+    q: "Do you work with businesses outside India?",
+    a: "Yes. Everything is done remotely. Calls, updates, and deliveries all happen async or via scheduled video calls. Timezone is not a blocker.",
   },
   {
     q: "What's a realistic ROI?",
-    a: "Most clients see measurable ROI within the first month — saved hours, reduced cloud spend, or new revenue from better conversion rates. We track it together and show you the numbers.",
+    a: "Most clients see measurable ROI within the first month. Saved hours or new revenue from better follow-up. We track it together and show you the numbers.",
   },
 ];
 
@@ -133,7 +144,7 @@ export default function Home() {
         <Navbar>
           <NavBody>
             <a href="/" className="relative z-20 font-bold text-base text-black">
-              aim<span className="text-neutral-400">plify</span>
+              orch<span className="text-neutral-400">ops</span>
             </a>
             <NavItems items={navItems} />
             <NavbarButton href="#contact" variant="dark">Book a Call</NavbarButton>
@@ -141,7 +152,7 @@ export default function Home() {
           <MobileNav>
             <MobileNavHeader>
               <a href="/" className="font-bold text-base text-black">
-                aim<span className="text-neutral-400">plify</span>
+                orch<span className="text-neutral-400">ops</span>
               </a>
               <MobileNavToggle isOpen={mobileOpen} onClick={() => setMobileOpen(!mobileOpen)} />
             </MobileNavHeader>
@@ -161,7 +172,7 @@ export default function Home() {
       </div>
 
       {/* ── HERO ───────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex items-center pt-32 pb-24 px-6 overflow-hidden">
+      <section className="relative min-h-screen flex items-center pt-28 sm:pt-32 pb-16 sm:pb-24 px-4 sm:px-6 overflow-hidden">
         <AnimatedGridPattern
           numSquares={28} maxOpacity={0.035} duration={5}
           className="absolute inset-0 text-neutral-900"
@@ -180,14 +191,14 @@ export default function Home() {
               )}>
                 <Sparkles size={12} className="text-neutral-400" />
                 <AnimatedShinyText className="text-xs font-medium text-neutral-500">
-                  AI · Automation · Full-Stack Growth Partner
+                  AI Automation  Chatbots  Agency Workflows
                 </AnimatedShinyText>
               </div>
             </motion.div>
 
             <motion.h1
               variants={fadeUp}
-              className="text-5xl sm:text-6xl xl:text-[68px] font-black tracking-tight leading-[1.06] text-neutral-900"
+              className="text-4xl sm:text-5xl md:text-6xl xl:text-[68px] font-black tracking-tight leading-[1.06] text-neutral-900"
             >
               Your business
               <br />
@@ -196,7 +207,7 @@ export default function Home() {
               <span className="text-neutral-300">Let tech handle</span>
               <br />
               <FlipWords
-                words={["the automation.", "the marketing.", "the complexity.", "the heavy lifting."]}
+                words={["the automation.", "the chatbot.", "the workflows.", "the heavy lifting."]}
                 className="text-neutral-900 px-0"
                 duration={2600}
               />
@@ -206,8 +217,8 @@ export default function Home() {
               variants={fadeUp}
               className="mt-6 text-base sm:text-lg leading-relaxed max-w-lg text-neutral-500"
             >
-              We sit with you, map your entire business, and find every place where
-              AI, automation, or better tech saves time and cuts costs — then we build it and keep it running.
+              We sit with you, map your business, and automate the work that&apos;s eating your time.
+              Workflows, chatbots, and agency ops. Built personally by a GenAI engineer, not outsourced.
             </motion.p>
 
             <motion.div variants={fadeUp} className="mt-8 flex flex-col sm:flex-row items-start gap-3">
@@ -236,12 +247,12 @@ export default function Home() {
             </motion.div>
           </motion.div>
 
-          {/* Right — flow diagram */}
+          {/* Right — flow diagram (hidden on mobile) */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.75, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="w-full"
+            className="hidden lg:block w-full"
           >
             <FlowDiagram />
           </motion.div>
@@ -249,20 +260,20 @@ export default function Home() {
       </section>
 
       {/* ── STATS ──────────────────────────────────────────────── */}
-      <section className="border-y border-neutral-100 bg-neutral-950 py-14 px-6">
+      <section className="border-y border-neutral-100 bg-neutral-950 py-10 px-4">
         <motion.div
           variants={stagger} initial="hidden" whileInView="show"
           viewport={{ once: true, margin: "-60px" }}
-          className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10"
+          className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10"
         >
           {stats.map(({ value, label }) => (
             <motion.div
               key={label}
               variants={fadeUp}
-              className="flex flex-col items-center text-center"
+              className="flex flex-col items-center text-center py-2"
             >
-              <span className="text-4xl sm:text-5xl font-black text-white tracking-tight">{value}</span>
-              <span className="mt-2 text-xs font-medium text-neutral-500 uppercase tracking-widest">{label}</span>
+              <span className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight whitespace-nowrap">{value}</span>
+              <span className="mt-2 text-[10px] sm:text-xs font-medium text-neutral-500 uppercase tracking-widest">{label}</span>
             </motion.div>
           ))}
         </motion.div>
@@ -272,8 +283,8 @@ export default function Home() {
       <div className="border-b border-neutral-100 py-4 bg-neutral-50/80">
         <Marquee pauseOnHover repeat={4} className="[--duration:28s] [--gap:1.5rem]">
           {techItems.map((tech) => (
-            <span key={tech} className="inline-flex items-center gap-3 text-sm font-medium text-neutral-400 px-2">
-              {tech}<span className="text-neutral-200">·</span>
+            <span key={tech} className="inline-flex items-center gap-3 text-sm font-medium text-neutral-400 px-4">
+              {tech}
             </span>
           ))}
         </Marquee>
@@ -291,10 +302,10 @@ export default function Home() {
               What We Do
             </motion.p>
             <motion.h2 variants={fadeUp} className="text-4xl sm:text-5xl font-black tracking-tight text-neutral-900">
-              Everything your business<br />needs to scale
+              Three things, done right
             </motion.h2>
             <motion.p variants={fadeUp} className="mt-4 text-base text-neutral-500 max-w-md mx-auto">
-              We don&apos;t lock you into one service. We look at your whole operation and do whatever actually moves the needle.
+              We don&apos;t try to do everything. We automate workflows, build AI chatbots, and streamline agency ops. We do each one properly.
             </motion.p>
           </motion.div>
 
@@ -439,6 +450,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
 
+            {/* Founder card */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -446,7 +458,28 @@ export default function Home() {
               transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
               className="flex justify-center lg:justify-start"
             >
-              <CardStack items={whyCards} offset={12} scaleFactor={0.05} />
+              <div className="relative w-full max-w-sm p-7 rounded-2xl border border-neutral-200 bg-white shadow-sm">
+                <div className="flex items-center gap-4 mb-5">
+                  <div className="w-14 h-14 rounded-full bg-neutral-900 flex items-center justify-center shrink-0">
+                    <span className="text-white font-black text-lg tracking-tight">RA</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-neutral-900 text-sm">{founder.name}</p>
+                    <p className="text-xs text-neutral-500">{founder.title}</p>
+                  </div>
+                </div>
+                <p className="text-sm leading-relaxed text-neutral-600 mb-5">
+                  &ldquo;{founder.bio}&rdquo;
+                </p>
+                <a
+                  href={founder.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-xs font-semibold text-neutral-500 hover:text-neutral-900 transition-colors"
+                >
+                  <ExternalLink size={14} /> Connect on LinkedIn
+                </a>
+              </div>
             </motion.div>
 
             <motion.div
@@ -454,23 +487,23 @@ export default function Home() {
               viewport={{ once: true, margin: "-80px" }}
             >
               <motion.p variants={fadeUp} className="text-xs font-semibold tracking-widest uppercase text-neutral-400 mb-3">
-                Why Aimplify
+                Why Orchops
               </motion.p>
               <motion.h2 variants={fadeUp} className="text-4xl sm:text-5xl font-black tracking-tight text-neutral-900 mb-5 leading-tight">
                 We grow your business,<br />not our portfolio.
               </motion.h2>
               <motion.p variants={fadeUp} className="text-base text-neutral-500 mb-8 leading-relaxed">
-                When agencies get too big, you become a ticket number. We stay deliberately small — one client, full attention, real accountability.
+                When agencies get too big, you become a ticket number. We stay deliberately small. One client, full attention, real accountability.
               </motion.p>
 
               <motion.div variants={stagger} className="flex flex-col gap-3">
                 {[
                   "We listen first, pitch never",
                   "Every solution custom-built for your business",
-                  "One dedicated point of contact — no relay race",
-                  "Plain English — zero jargon or buzzwords",
+                  "One dedicated point of contact. No relay race.",
+                  "Plain English. Zero jargon or buzzwords.",
                   "Initial build + flat-rate monthly maintenance",
-                  "Clients in USA, UK, Canada, Australia & beyond",
+                  "Open to clients worldwide. Everything is remote.",
                 ].map((point) => (
                   <motion.div key={point} variants={fadeUp} className="flex items-start gap-3">
                     <CheckCircle2 size={15} className="text-emerald-500 mt-0.5 shrink-0" />
@@ -543,7 +576,7 @@ export default function Home() {
             </motion.h2>
 
             <motion.p variants={fadeUp} className="text-base text-neutral-400 mb-10 leading-relaxed">
-              Book a free discovery call. No pitch, no pressure — just a real conversation about your business and where we can add value.
+              Book a free discovery call. No pitch, no pressure. Just a real conversation about your business and where we can add value.
             </motion.p>
 
             <motion.div variants={fadeUp} className="flex justify-center">
@@ -551,14 +584,14 @@ export default function Home() {
                 shimmerColor="rgba(255,255,255,0.6)"
                 background="rgba(255,255,255,1)"
                 className="text-sm font-bold gap-2 px-8 py-3.5 !text-black"
-                onClick={() => window.open("https://calendly.com", "_blank")}
+                onClick={() => window.open("https://calendly.com/rambabuarabandi2001/ai-meet", "_blank")}
               >
                 Book a Free Call <ArrowRight size={15} />
               </ShimmerButton>
             </motion.div>
 
             <motion.p variants={fadeUp} className="mt-6 text-xs text-neutral-600">
-              Usually responds within a few hours · 100% free · No commitment required
+              Usually responds within a few hours &nbsp; 100% free &nbsp; No commitment required
             </motion.p>
           </motion.div>
         </div>
@@ -567,13 +600,19 @@ export default function Home() {
       {/* ── FOOTER ─────────────────────────────────────────────── */}
       <footer className="py-8 px-6 border-t border-neutral-100 bg-white flex flex-col sm:flex-row items-center justify-between gap-4">
         <span className="font-bold text-base text-black">
-          aim<span className="text-neutral-400">plify</span>
+          orch<span className="text-neutral-400">ops</span>
         </span>
-        <p className="text-xs text-neutral-400">© {new Date().getFullYear()} Aimplify. All rights reserved.</p>
-        <div className="flex items-center gap-1.5 text-xs text-neutral-400">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse" />
-          All systems operational
-        </div>
+        <p className="text-xs text-neutral-400">
+          © {new Date().getFullYear()} Orchops
+        </p>
+        <a
+          href="https://linkedin.com/in/rambabu-arabandi"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-neutral-700 transition-colors"
+        >
+          <ExternalLink size={12} /> LinkedIn
+        </a>
       </footer>
 
     </main>

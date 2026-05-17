@@ -7,18 +7,15 @@ export default function Cursor() {
   const mx = useMotionValue(-100);
   const my = useMotionValue(-100);
 
-  const dotX = useSpring(mx, { stiffness: 600, damping: 36 });
-  const dotY = useSpring(my, { stiffness: 600, damping: 36 });
-
-  const ringX = useSpring(mx, { stiffness: 180, damping: 24 });
-  const ringY = useSpring(my, { stiffness: 180, damping: 24 });
+  const ringX = useSpring(mx, { stiffness: 700, damping: 40, mass: 0.4 });
+  const ringY = useSpring(my, { stiffness: 700, damping: 40, mass: 0.4 });
 
   useEffect(() => {
     const move = (e: MouseEvent) => {
       mx.set(e.clientX);
       my.set(e.clientY);
     };
-    window.addEventListener("mousemove", move);
+    window.addEventListener("mousemove", move, { passive: true });
     return () => window.removeEventListener("mousemove", move);
   }, [mx, my]);
 
@@ -26,7 +23,7 @@ export default function Cursor() {
     <>
       <motion.div
         className="cursor-dot"
-        style={{ x: dotX, y: dotY, translateX: "-50%", translateY: "-50%" }}
+        style={{ x: mx, y: my, translateX: "-50%", translateY: "-50%" }}
       />
       <motion.div
         className="cursor-ring"
